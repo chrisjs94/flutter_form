@@ -12,7 +12,7 @@ class Routes{
   static Map<String, WidgetBuilder> getRoutes() {
     return {
       login: (context) => LoginPage.withTitle(title: 'Login'),
-      records: (context) => const RecordsPage(),
+      records: (context) => RecordsPage(),
       employeeForm:(context) => const EmployeePage()
     };
   }

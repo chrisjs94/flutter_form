@@ -1,28 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form/database/databasehelper.dart';
+import 'package:flutter_form/ui/dialogs.dart';
 import 'package:flutter_form/ui/pages/list_tile_template.dart';
 
 import '../core/scaffolds.dart';
 import '../core/routes.dart';
-import '../data/dummy.dart';
 import '../model/record.dart';
 
 class RecordsPage extends StatefulWidget {
-  const RecordsPage({super.key});
+  RecordsPage({super.key});
+  final DatabaseHelper databaseHelper = DatabaseHelper();
 
   @override
   State<RecordsPage> createState() => _RecordsPageState();
 }
 
 class _RecordsPageState extends State<RecordsPage> {
+  List<Record> records = List.empty();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadRecordsFromDatabase();
+  }
+
+  Future<void> _loadRecordsFromDatabase() async{
+    List<Record> loadedRecords = await widget.databaseHelper.getRecords();
+    setState(() {
+        records = loadedRecords;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffolds(context).homeScaffold(
       appBarTitle: 'Records page',
       pageBody: ListView.builder(
         padding: const EdgeInsets.only(top: 15.0),
-        itemCount: dummyRecords.length,
+        itemCount: records.length,
         itemBuilder: (context, index) {
-          return recordsItemList(context, dummyRecords[index]);
+          return recordsItemList(context, records[index]);
         }
       ),
       onFABPressed: () async {
@@ -30,8 +48,15 @@ class _RecordsPageState extends State<RecordsPage> {
         
         if (result != null){
           setState(() {
-            dummyRecords.add(result);
+            records.add(result);
           });
+
+          if (await widget.databaseHelper.insertRecord(result) > 0){
+            Dialogs(context).showSnackBar('La información ha sido guardada correctamente.');
+          }
+          else{
+            Dialogs(context).showSnackBar('La información ha sido guardada correctamente.');
+          }
         }
       }
     );

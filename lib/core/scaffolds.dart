@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_form/pages/parts/employeemap.dart';
+import 'package:flutter_form/controls/mapbuilder.dart';
 import 'package:flutter_form/ui/circularprogress.dart';
 import 'package:location/location.dart';
 
@@ -74,7 +74,7 @@ class Scaffolds{
                 collapseMode: CollapseMode.parallax,
                 centerTitle: false,
                 background: Container(
-                  child: currentLocation == null ? circularProgress() : buildMap(currentLocation, 18.0)
+                  child: currentLocation == null ? circularProgress() : MapBuilder().buildMap(currentLocation, 18.0)
                 )
               ),
             )

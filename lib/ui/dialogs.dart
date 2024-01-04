@@ -21,4 +21,10 @@ class Dialogs{
         ]);
       });
   }
+
+  showSnackBar(String content){
+    ScaffoldMessenger.of(_context).showSnackBar(SnackBar(
+      content: Text(content),
+    ));
+  }
 }
