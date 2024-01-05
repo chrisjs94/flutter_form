@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form/controls/mapbuilder.dart';
 import 'package:flutter_form/ui/circularprogress.dart';
@@ -14,7 +15,12 @@ class Scaffolds{
     required onFABPressed}){
     return Scaffold(
       appBar: AppBar(
-        title: Text(appBarTitle),
+        title: Row(
+          children: [
+            const SizedBox(width: 8.0),
+            Text(appBarTitle)
+          ],
+        )
       ),
       body: pageBody,
       floatingActionButton: FloatingActionButton(
@@ -53,14 +59,6 @@ class Scaffolds{
             snap: false,
             pinned: true,
             actions: [
-              const Padding(
-                  padding: EdgeInsets.all(5.0),
-                  child: CircleAvatar(
-                    radius: 28.0,
-                    backgroundImage: NetworkImage(
-                        'https://images.unsplash.com/photo-1547721064-da6cfb341d50'),
-                  ),
-                ),
               IconButton(
                 onPressed: onSaveButtonClick, 
                 icon: const Icon(Icons.save)

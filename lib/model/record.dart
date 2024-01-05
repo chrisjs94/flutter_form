@@ -52,6 +52,10 @@ class Record{
     return "";
   }
 
+  bool isEditing(){
+    return date == null;
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'idRecord': idRecord,

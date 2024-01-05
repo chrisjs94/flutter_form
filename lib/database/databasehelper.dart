@@ -34,17 +34,17 @@ class DatabaseHelper{
     return await _database.insert('records', record.toMap());
   }
 
-  Future<int> deleteRecord(int id) async{
+  Future<int> deleteRecord(String id) async{
     await openDB();
 
-    return await _database.delete('records', where: 'id = ?', whereArgs: [id]);
+    return await _database.delete('records', where: 'idRecord = ?', whereArgs: [id]);
   }
 
   Future<int> updateRecord(Record record) async{
     await openDB();
 
     return await _database.update('records', 
-      record.toMap(), where: 'id = ?', whereArgs: [record.idRecord]);
+      record.toMap(), where: 'idRecord = ?', whereArgs: [record.idRecord]);
   }
 
   Future<List<Record>> getRecords() async{

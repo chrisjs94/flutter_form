@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../helpers/datehelper.dart';
 import '../../model/record.dart';
-import '../dialogs.dart';
 
-Column recordsItemList(BuildContext context, Record record){
+Column recordsItemList(BuildContext context, Record record, onTapCallback){
   return Column(
     children: [
       ListTile(
@@ -20,21 +19,7 @@ Column recordsItemList(BuildContext context, Record record){
           backgroundImage: AssetImage('assets/images/avatar-man.png'),
         ),
         trailing: Text('Fecha: ${formatDate(record.date ?? DateTime.now())}'),
-        onLongPress: () => {
-          print('List tile long pressed')
-        },
-        onTap: (){
-          Dialogs(context).showAlert(record.label ?? '',
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Descripción: ${record.label}'),
-                Text('Descripción: ${formatDate(record.date ?? DateTime.now())}')
-              ],
-            )
-          );
-        },
+        onTap: () => onTapCallback(record),
       ),
       const Divider(),
     ],

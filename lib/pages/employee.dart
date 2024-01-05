@@ -22,13 +22,9 @@ class _EmployeePageState extends State<EmployeePage> {
     record = Record.empty();
   }
 
-  //_EmployeePageState.editRecord({required this.record});
-
   @override
   void initState() {
     super.initState();
-    
-    getCurrentLocation(updateLocationState);
   }
 
   updateLocationState(LocationData locationData){
@@ -41,8 +37,21 @@ class _EmployeePageState extends State<EmployeePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (ModalRoute.of(context)!.settings.arguments != null && ModalRoute.of(context)!.settings.arguments is Record){
+      setState(() {
+        record = ModalRoute.of(context)!.settings.arguments as Record;
+        _currentLocation = LocationData.fromMap({
+          "latitude": record.latitude,
+          "longitude": record.longitude,
+        });
+      });
+    }
+    else{
+      getCurrentLocation(updateLocationState);
+    }
+
     return Scaffolds(context).formScaffoldWithSliverAppBar(
-      appBarTitle: 'Add new record',
+      appBarTitle: !record.isEditing() ? 'Add new record' : 'Edit record',
       onSaveButtonClick: () => Navigator.pop(context, record),
       currentLocation: _currentLocation,
       pageBody: Padding(
@@ -61,6 +70,7 @@ class _EmployeePageState extends State<EmployeePage> {
             decoration: const InputDecoration(
               labelText: 'Label'
             ),
+            initialValue: record.label ?? '',
             textInputAction: TextInputAction.next,
             onChanged: (value) => {
               setState(() => {
@@ -74,6 +84,7 @@ class _EmployeePageState extends State<EmployeePage> {
             decoration: const InputDecoration(
               labelText: 'Description'
             ),
+            initialValue: record.description ?? '',
             textInputAction: TextInputAction.next,
             onChanged: (value) => {
               setState(() => {
@@ -90,6 +101,7 @@ class _EmployeePageState extends State<EmployeePage> {
                   decoration: const InputDecoration(
                     labelText: 'First name'
                   ),
+                  initialValue: record.firstName ?? '',
                   textCapitalization: TextCapitalization.words,
                   textInputAction: TextInputAction.next,
                   onChanged: (value) => {
@@ -106,6 +118,7 @@ class _EmployeePageState extends State<EmployeePage> {
                   decoration: const InputDecoration(
                     labelText: 'Middle Name'
                   ),
+                  initialValue: record.middleName ?? '',
                   textCapitalization: TextCapitalization.words,
                   textInputAction: TextInputAction.next,
                   onChanged: (value) => {
@@ -123,6 +136,7 @@ class _EmployeePageState extends State<EmployeePage> {
             decoration: const InputDecoration(
               labelText: 'Last name'
             ),
+            initialValue: record.lastName ?? '',
             textInputAction: TextInputAction.next,
             onChanged: (value) => {
               setState(() => {
@@ -137,6 +151,7 @@ class _EmployeePageState extends State<EmployeePage> {
             decoration: const InputDecoration(
               labelText: 'Birthday'
             ),
+            //initialValue: DateFormat('yyyy-MM-dd').format(record.birthday ?? DateTime.now()),
             controller: TextEditingController(
               text: DateFormat('yyyy-MM-dd').format(record.birthday ?? DateTime.now())
             ),
@@ -163,6 +178,7 @@ class _EmployeePageState extends State<EmployeePage> {
             controller: TextEditingController(
               text: calculateAge(record.birthday ?? DateTime.now())
             ),
+            //initialValue: (record.age ?? 0).toString(),
             decoration: const InputDecoration(
               labelText: 'Age'
             )
@@ -184,11 +200,11 @@ class _EmployeePageState extends State<EmployeePage> {
           const SizedBox(height: 16),
 
           DropdownButtonFormField<String>(
-            value: record.occupation,
+            value: record.profession,
             decoration: const InputDecoration(labelText: 'Profession'),
             onChanged: (value) => {
               setState((){
-                record.occupation = value;
+                record.profession = value;
               })
             },
             items: ['Engineering', 'Licensing', 'Other'].map((e) {
@@ -229,6 +245,7 @@ class _EmployeePageState extends State<EmployeePage> {
             decoration: const InputDecoration(
               labelText: 'Latitude'
             ),
+            //initialValue: record.latitude.toString(),
             controller: TextEditingController(
               text: record.latitude.toString()
             ),
@@ -241,6 +258,7 @@ class _EmployeePageState extends State<EmployeePage> {
             decoration: const InputDecoration(
               labelText: 'Longitude'
             ),
+            //initialValue: record.longitude.toString(),
             controller: TextEditingController(
               text: record.longitude.toString()
             ),
@@ -250,16 +268,19 @@ class _EmployeePageState extends State<EmployeePage> {
 
           ElevatedButton(
             onPressed: () => {
-              _addRecord(context)
+              Navigator.pop(context, record)
             }, 
-            child: const Text('Add')
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.save),
+                const SizedBox(width: 5),
+                Text(record.isEditing() ? 'Save changes' : 'Add record')
+              ],
+            )
           )
         ],
       ),
     );
-  }
-  
-  _addRecord(BuildContext context) {
-    Navigator.of(context).pop();
   }
 }
