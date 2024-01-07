@@ -3,6 +3,8 @@ import 'package:flutter_form/pages/employee.dart';
 import 'package:flutter_form/pages/login.dart';
 import 'package:flutter_form/pages/records.dart';
 
+import '../pages/map.dart';
+
 class Routes{
   static const String login = '/login';
   static const String records = '/records';
@@ -13,7 +15,8 @@ class Routes{
     return {
       login: (context) => LoginPage.withTitle(title: 'Login'),
       records: (context) => RecordsPage(),
-      employeeForm:(context) => const EmployeePage()
+      employeeForm: (context) => const EmployeePage(),
+      mapView: (context) => MapPage()
     };
   }
 }

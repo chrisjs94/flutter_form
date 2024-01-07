@@ -16,6 +16,10 @@ class Record{
   String? profession;
   double? latitude;
   double? longitude;
+  double? altitude;
+  double? accuracy;
+  String? provider;
+  double? speed;
 
   Record.empty();
 

@@ -45,45 +45,13 @@ class Scaffolds{
     );
   }
 
-  Scaffold formScaffoldWithSliverAppBar({
-    required String appBarTitle,
-    required Widget pageBody,
-    required LocationData? currentLocation,
-    required onSaveButtonClick}){
+  Scaffold mapScaffold({required String appBarTitle, required Widget pageBody, required List<Widget> appBarActions}){
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: MediaQuery.of(_context).size.height * 0.6,
-            floating: false,
-            snap: false,
-            pinned: true,
-            actions: [
-              IconButton(
-                onPressed: onSaveButtonClick, 
-                icon: const Icon(Icons.save)
-              )
-            ],
-            flexibleSpace: ClipRRect(
-              //borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20.0), bottomRight: Radius.circular(20.0)),
-              child: FlexibleSpaceBar(
-                title: Text(appBarTitle, textScaleFactor: 0.8, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                titlePadding: const EdgeInsetsDirectional.only(start: 50.0, bottom: 16.0),
-                collapseMode: CollapseMode.parallax,
-                centerTitle: false,
-                background: Container(
-                  child: currentLocation == null ? circularProgress() : MapBuilder().buildMap(currentLocation, 18.0)
-                )
-              ),
-            )
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              pageBody
-            ])
-          )
-        ],
+      appBar: AppBar(
+        title: Text(appBarTitle),
+        actions: appBarActions,
       ),
+      body: pageBody,
     );
   }
 }

@@ -1,20 +1,24 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_form/shared/constants.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
-class MapBuilder{
-  final double _defaultLatitude = 0.0;
-  final double _defaultLongitude = 0.0;
-  late Completer<GoogleMapController> mapControllerCompleter;
+class StaticMap extends StatelessWidget{
+  
+  final Completer<GoogleMapController> mapControllerCompleter = Completer();
+  final LocationData locationData; final double zoom;
 
-  MapBuilder(){
-    mapControllerCompleter = Completer();
-  }
+  StaticMap({
+    required this.locationData,
+    required this.zoom,
+    super.key,
+  });
 
-  Widget buildMap(LocationData locationData, double zoom){
-    var latLng = LatLng(locationData.latitude ?? _defaultLatitude, locationData.longitude ?? _defaultLongitude);
+  @override
+  Widget build(BuildContext context) {
+    var latLng = LatLng(locationData.latitude ?? defaultLatitude, locationData.longitude ?? defaultLongitude);
     
     return GoogleMap(
       onMapCreated: (GoogleMapController controller) {

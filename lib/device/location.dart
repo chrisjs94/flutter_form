@@ -1,6 +1,6 @@
 import 'package:location/location.dart';
 
-Future<LocationData> getCurrentLocation(Function callback) async {
+Future<LocationData> getLocation() async {
   try{
     Location location = Location();
     bool serviceEnabled; PermissionStatus permissionGranted;
@@ -24,8 +24,6 @@ Future<LocationData> getCurrentLocation(Function callback) async {
     //Obtiene la posición actual
     LocationData currentLocation = await location.getLocation();
     print("Latitud: ${currentLocation.latitude}, Longitud: ${currentLocation.longitude}");
-
-    callback(currentLocation);
 
     return currentLocation;
   }
