@@ -73,9 +73,9 @@ class EmployeeForm extends StatelessWidget {
                 child: const Icon(Icons.clear), // Icono a la derecha del campo para borrar
               )*/
             ),
-            controller: TextEditingController(
-              text: record.description ?? ''
-            ),
+            //controller: TextEditingController(
+            //  text: record.description ?? ''
+            //),
             initialValue: record.description ?? '',
             /*validator: (value) {
               if (value == null || value.isEmpty) {

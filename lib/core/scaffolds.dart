@@ -1,8 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_form/controls/mapbuilder.dart';
-import 'package:flutter_form/ui/circularprogress.dart';
-import 'package:location/location.dart';
 
 class Scaffolds{
   final BuildContext _context;
@@ -23,10 +20,19 @@ class Scaffolds{
         )
       ),
       body: pageBody,
-      floatingActionButton: FloatingActionButton(
-        onPressed: onFABPressed,
-        child: const Icon(Icons.add)
-      ),
+      floatingActionButton: TweenAnimationBuilder(
+        tween: ColorTween(
+          begin: Colors.blue,
+          end: Colors.red
+        ),
+        duration: const Duration(milliseconds: 500),
+        builder: (context, value, child) {
+          return FloatingActionButton(
+            onPressed: onFABPressed,
+            child: const Icon(Icons.add)
+          );
+        },
+      )
     );
   }
 
