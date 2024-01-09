@@ -95,7 +95,7 @@ class _RecordsPageState extends State<RecordsPage> {
           children: [
             Image.asset(
               'assets/images/nodata.png',
-              height: 500.0, // Ajusta el tamaño de la imagen según tus necesidades
+              height: MediaQuery.of(context).size.height * 0.5, // Ajusta el tamaño de la imagen según tus necesidades
             ),
             _emptyTextWidget('No hemos encontrado registros'),
           ],

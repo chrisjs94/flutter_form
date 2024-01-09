@@ -20,18 +20,9 @@ class Scaffolds{
         )
       ),
       body: pageBody,
-      floatingActionButton: TweenAnimationBuilder(
-        tween: ColorTween(
-          begin: Colors.blue,
-          end: Colors.red
-        ),
-        duration: const Duration(milliseconds: 500),
-        builder: (context, value, child) {
-          return FloatingActionButton(
-            onPressed: onFABPressed,
-            child: const Icon(Icons.add)
-          );
-        },
+      floatingActionButton: FloatingActionButton(
+        onPressed: onFABPressed,
+        child: const Icon(Icons.add)
       )
     );
   }
@@ -41,6 +32,10 @@ class Scaffolds{
       appBar: AppBar(
         title: Text(appBarTitle),
         actions: [
+          IconButton(
+            onPressed: () => Navigator.popAndPushNamed(_context, backRoute), 
+            icon: const Icon(Icons.camera)
+          ),
           IconButton(
             onPressed: () => Navigator.popAndPushNamed(_context, backRoute), 
             icon: const Icon(Icons.exit_to_app)

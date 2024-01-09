@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form/device/location.dart';
-import 'package:flutter_form/helpers/datehelper.dart';
 import 'package:flutter_form/ui/circularprogress.dart';
 import 'package:flutter_form/widgets/employeeform.dart';
+import 'package:flutter_form/widgets/gallerypicker.dart';
 import 'package:flutter_form/widgets/sliverappbarform.dart';
-import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 
 import '../core/routes.dart';
@@ -19,6 +19,7 @@ class EmployeePage extends StatefulWidget {
 
 class _EmployeePageState extends State<EmployeePage> {
   late Record record; LocationData? _currentLocation; bool _firstBuild = true;
+  List<XFile> images = [];
   //final GlobalKey<GoogleMapStateBase> _mapKey = GlobalKey<GoogleMapStateBase>();
   //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -54,6 +55,17 @@ class _EmployeePageState extends State<EmployeePage> {
     });
   }
 
+  Future<void> pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    XFile? pickedImage = await picker.pickImage(source: source);
+
+    if (pickedImage != null) {
+      setState(() {
+        images.add(pickedImage);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_firstBuild){
@@ -76,15 +88,24 @@ class _EmployeePageState extends State<EmployeePage> {
       appBarTitle: !record.isEditing() ? 'Add new record' : 'Edit record',
       onSaveButtonClick: () => Navigator.pop(context, record),
       onMapButtonClick: viewMapPage,
+      onPickImageFromCameraButtonClick: () async => {
+        await pickImage(ImageSource.camera)
+      },
+      onPickImageFromGalleryButtonClick: () async => {
+        await pickImage(ImageSource.gallery)
+      },
       currentLocation: _currentLocation,
-      pageBody: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: _currentLocation == null ? circularProgress() : EmployeeForm(
-          record: record,
-          onChanged: onChanged,
-          //key: _formKey,
+      gallery: GalleryImages(images: images),
+      pageBody:  
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: _currentLocation == null ? circularProgress() : 
+            EmployeeForm(
+              record: record,
+              onChanged: onChanged,
+              //key: _formKey,
+            )
         )
-      )
     );
   }
 }

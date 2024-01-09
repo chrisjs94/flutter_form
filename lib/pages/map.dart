@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_form/shared/constants.dart';
 import 'package:flutter_form/widgets/mapwidget.dart';

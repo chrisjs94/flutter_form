@@ -6,8 +6,9 @@ import 'package:location/location.dart';
 
 import '../shared/constants.dart';
 
+// ignore: must_be_immutable
 class MapWidget extends StatefulWidget {
-  LocationData locationData; MapType currentMapType;
+  LocationData locationData; final MapType currentMapType;
   final dynamic onChangedLocation;
 
   MapWidget({
