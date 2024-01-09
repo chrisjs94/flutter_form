@@ -95,7 +95,9 @@ class _EmployeePageState extends State<EmployeePage> {
         await pickImage(ImageSource.gallery)
       },
       currentLocation: _currentLocation,
-      gallery: GalleryImages(images: images),
+      gallery: GalleryImages(images: images, onDeleted: (index) => {
+        setState(() => images.removeAt(index))
+      },),
       pageBody:  
         Padding(
           padding: const EdgeInsets.all(16.0),

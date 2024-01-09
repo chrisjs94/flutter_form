@@ -37,10 +37,10 @@ class SliverAppBarMapForm extends StatelessWidget {
             pinned: true,
             actions: [
               IconButton(
-                onPressed: onPickImageFromCameraButtonClick, icon: const Icon(Icons.camera)
+                onPressed: onPickImageFromCameraButtonClick, icon: const Icon(Icons.camera_alt)
               ),
               IconButton(
-                onPressed: onPickImageFromGalleryButtonClick, icon: const Icon(Icons.browse_gallery)
+                onPressed: onPickImageFromGalleryButtonClick, icon: const Icon(Icons.folder)
               ),
               IconButton(
                 onPressed: onMapButtonClick, icon: const Icon(Icons.map)
