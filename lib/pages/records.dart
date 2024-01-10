@@ -25,17 +25,23 @@ class _RecordsPageState extends State<RecordsPage> {
     _loadRecordsFromDatabase();
   }
 
-  Future<void> _loadRecordsFromDatabase() async{
+  void _showMessage(String message) {
+    Dialogs(context).showSnackBar(message);
+  }
+
+  Future<void> _loadRecordsFromDatabase() async {
     List<Record> loadedRecords = await widget.databaseHelper.getRecords();
     setState(() {
-        records = loadedRecords;
+      records = loadedRecords;
     });
   }
 
   Future<void> _updateRecord(Record record) async {
-    final Record? result = await Navigator.pushNamed(context, Routes.employeeForm, arguments: record) as Record?;
-    if (result != null){
-      if (await widget.databaseHelper.updateRecord(result) > 0){
+    final Record? result = await Navigator.pushNamed(
+        context, Routes.employeeForm,
+        arguments: record) as Record?;
+    if (result != null) {
+      if (await widget.databaseHelper.updateRecord(result) > 0) {
         //int index = records.indexWhere((record) => record.idRecord == result.idRecord);
         //setState(() {
         //  records[index] = result;
@@ -43,7 +49,8 @@ class _RecordsPageState extends State<RecordsPage> {
 
         setState(() {
           //Actualizando el state para mostrar los ultimos cambios en el listview
-          Dialogs(context).showSnackBar('Se ha actualizado la información correctamente');
+          Dialogs(context)
+              .showSnackBar('Se ha actualizado la información correctamente');
         });
       }
     }
@@ -52,28 +59,29 @@ class _RecordsPageState extends State<RecordsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffolds(context).homeScaffold(
-      appBarTitle: 'Records page',
-      pageBody: records.isEmpty ? _emptyImageWidget() : _buildListView(context),
-      onFABPressed: () async {
-        final Record? result = (await Navigator.pushNamed(context, Routes.employeeForm)) as Record?;
-        
-        if (result != null){
-          setState(() {
-            records.add(result);
-          });
+        appBarTitle: 'Records page',
+        pageBody:
+            records.isEmpty ? _emptyImageWidget() : _buildListView(context),
+        onFABPressed: () async {
+          final Record? result =
+              (await Navigator.pushNamed(context, Routes.employeeForm))
+                  as Record?;
 
-          if (await widget.databaseHelper.insertRecord(result) > 0){
-            Dialogs(context).showSnackBar('La información ha sido guardada correctamente.');
+          if (result != null) {
+            setState(() {
+              records.add(result);
+            });
+
+            if (await widget.databaseHelper.insertRecord(result) > 0) {
+              _showMessage('La información ha sido guardada correctamente.');
+            } else {
+              _showMessage('La información ha sido guardada correctamente.');
+            }
           }
-          else{
-            Dialogs(context).showSnackBar('La información ha sido guardada correctamente.');
-          }
-        }
-      }
-    );
+        });
   }
 
-  Widget _emptyTextWidget(String message){
+  Widget _emptyTextWidget(String message) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -86,7 +94,7 @@ class _RecordsPageState extends State<RecordsPage> {
     );
   }
 
-  Widget _emptyImageWidget(){
+  Widget _emptyImageWidget() {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -95,7 +103,8 @@ class _RecordsPageState extends State<RecordsPage> {
           children: [
             Image.asset(
               'assets/images/nodata.png',
-              height: MediaQuery.of(context).size.height * 0.5, // Ajusta el tamaño de la imagen según tus necesidades
+              height: MediaQuery.of(context).size.height *
+                  0.5, // Ajusta el tamaño de la imagen según tus necesidades
             ),
             _emptyTextWidget('No hemos encontrado registros'),
           ],
@@ -104,50 +113,51 @@ class _RecordsPageState extends State<RecordsPage> {
     );
   }
 
-  ListView _buildListView(BuildContext context){
+  ListView _buildListView(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 15.0),
-      itemCount: records.length,
-      itemBuilder: (context, index) {
-        return Dismissible(
-          key: Key(records[index].idRecord as String),
-          direction: DismissDirection.endToStart,
-          onDismissed: (DismissDirection direction){
-            //Move to trash
-            widget.databaseHelper.deleteRecord(records[index].idRecord as String);
-            setState(() {
-              records.removeAt(index);
-            });
-            Dialogs(context).showSnackBar('Registro eliminado');
-          },
-          background:Container(
-            color: Colors.blue,
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Row(
-                children: const [
-                  Icon(Icons.favorite, color: Colors.white),
-                  Text('Move to favorites', style: TextStyle(color: Colors.white)),
-                ],
+        padding: const EdgeInsets.only(top: 15.0),
+        itemCount: records.length,
+        itemBuilder: (context, index) {
+          return Dismissible(
+              key: Key(records[index].idRecord as String),
+              direction: DismissDirection.endToStart,
+              onDismissed: (DismissDirection direction) {
+                //Move to trash
+                widget.databaseHelper
+                    .deleteRecord(records[index].idRecord as String);
+                setState(() {
+                  records.removeAt(index);
+                });
+                Dialogs(context).showSnackBar('Registro eliminado');
+              },
+              background: Container(
+                color: Colors.blue,
+                child: const Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Row(
+                    children: [
+                      Icon(Icons.favorite, color: Colors.white),
+                      Text('Move to favorites',
+                          style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-          secondaryBackground: Container(
-            color: Colors.red,
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: const [
-                  Icon(Icons.delete, color: Colors.white),
-                  Text('Move to trash', style: TextStyle(color: Colors.white)),
-                ],
+              secondaryBackground: Container(
+                color: Colors.red,
+                child: const Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Icon(Icons.delete, color: Colors.white),
+                      Text('Move to trash',
+                          style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-          child: recordsItemList(context, records[index], _updateRecord)
-        );
-      }
-    );
+              child: recordsItemList(context, records[index], _updateRecord));
+        });
   }
 }
