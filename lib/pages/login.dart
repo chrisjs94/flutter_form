@@ -9,7 +9,7 @@ class LoginPage extends StatelessWidget {
   final TextEditingController _passwordController = TextEditingController();
   late final String title;
 
-  LoginPage({super.key}){
+  LoginPage({super.key}) {
     title = 'Login Page';
   }
 
@@ -18,9 +18,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title)
-      ),
+      appBar: AppBar(title: Text(title)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -28,42 +26,34 @@ class LoginPage extends StatelessWidget {
           children: [
             TextField(
               controller: _usernameController,
-              decoration: const InputDecoration(
-                labelText: 'Usuario'
-              ),
+              decoration: const InputDecoration(labelText: 'Usuario'),
             ),
-
             const SizedBox(height: 20),
             TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Contraseña'
-              )
-            ),
-
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(labelText: 'Contraseña')),
             const SizedBox(height: 20),
+            ElevatedButton(
+                onPressed: () {
+                  String username = _usernameController.text;
+                  String password = _passwordController.text;
 
-            ElevatedButton(onPressed: (){
-              String username = _usernameController.text;
-              String password = _passwordController.text;
-
-              if (username == 'admin' && password == 'admin'){
-                saveSessionData(username);
-                Navigator.pushReplacementNamed(context, Routes.records);
-              }
-              else{
-                Dialogs(context).showAlert('Alerta', 
-                  SingleChildScrollView(
-                    child: ListBody(
-                      children: const [
-                        Text('Username: Usuario y/o contraseña incorrectos')
-                      ],
-                    )
-                  )
-                );
-              }
-            }, child: const Text('Iniciar sesión'))
+                  if (username == 'admin' && password == 'admin') {
+                    saveSessionData(username);
+                    Navigator.pushReplacementNamed(context, Routes.records);
+                  } else {
+                    Dialogs(context).showAlert(
+                        'Alerta',
+                        const SingleChildScrollView(
+                            child: ListBody(
+                          children: [
+                            Text('Username: Usuario y/o contraseña incorrectos')
+                          ],
+                        )));
+                  }
+                },
+                child: const Text('Iniciar sesión'))
           ],
         ),
       ),

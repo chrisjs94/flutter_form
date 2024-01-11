@@ -5,7 +5,7 @@ import 'package:flutter_form/pages/records.dart';
 
 import '../pages/map.dart';
 
-class Routes{
+class Routes {
   static const String login = '/login';
   static const String records = '/records';
   static const String employeeForm = '/employeeForm';
@@ -16,7 +16,7 @@ class Routes{
       login: (context) => LoginPage.withTitle(title: 'Login'),
       records: (context) => RecordsPage(),
       employeeForm: (context) => const EmployeePage(),
-      mapView: (context) => MapPage()
+      mapView: (context) => const MapPage()
     };
   }
 }
