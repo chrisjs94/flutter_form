@@ -125,7 +125,8 @@ class _RecordsPageState extends State<RecordsPage> {
   }
 
   Widget _emptyImageWidget() {
-    return SafeArea(child: Center(
+    return SafeArea( 
+    child: Center(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
