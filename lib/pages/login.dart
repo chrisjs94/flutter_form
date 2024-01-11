@@ -45,9 +45,9 @@ class LoginPage extends StatelessWidget {
                   } else {
                     Dialogs(context).showAlert(
                         'Alerta',
-                        const SingleChildScrollView(
+                        SingleChildScrollView(
                             child: ListBody(
-                          children: [
+                          children: const [
                             Text('Username: Usuario y/o contraseña incorrectos')
                           ],
                         )));

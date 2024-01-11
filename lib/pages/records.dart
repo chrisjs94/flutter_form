@@ -16,7 +16,28 @@ class RecordsPage extends StatefulWidget {
 }
 
 class _RecordsPageState extends State<RecordsPage> {
-  List<Record> records = List.empty();
+  List<Record> records = List.empty(); String filter = ''; String typeFilter = '';
+  List<Record> get filteredRecords {
+    return records.where((Record element) {
+      if (filter.isEmpty){
+        return true;
+      }
+      else if (typeFilter.isNotEmpty){
+        if (typeFilter == "name"){
+          return (element.lastName! + element.firstName! + element.middleName!).toLowerCase().trim().contains(RegExp(filter.toLowerCase().trim()), 0);
+        }
+        else if (typeFilter == "description"){
+          return (element.description!).toLowerCase().trim().contains(RegExp(filter.toLowerCase().trim()), 0);
+        }
+        else {
+          return false;
+        }
+      }
+      else{
+        return element.label!.toLowerCase().trim().contains(filter.toLowerCase().trim());
+      }
+    }).toList();
+  }
 
   @override
   void initState() {
@@ -27,6 +48,13 @@ class _RecordsPageState extends State<RecordsPage> {
 
   void _showMessage(String message) {
     Dialogs(context).showSnackBar(message);
+  }
+
+  void onSearchAction(String? filter, String? value, String? operation){
+    setState(() {
+      typeFilter = filter ?? '';
+      this.filter = value ?? '';
+    });
   }
 
   Future<void> _loadRecordsFromDatabase() async {
@@ -59,26 +87,28 @@ class _RecordsPageState extends State<RecordsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffolds(context).homeScaffold(
-        appBarTitle: 'Records page',
-        pageBody:
-            records.isEmpty ? _emptyImageWidget() : _buildListView(context),
-        onFABPressed: () async {
-          final Record? result =
-              (await Navigator.pushNamed(context, Routes.employeeForm))
-                  as Record?;
+      appBarTitle: 'Records page',
+      pageBody:
+          records.isEmpty ? _emptyImageWidget() : _buildListView(context),
+      onSearchAction: onSearchAction,
+      onFABPressed: () async {
+        final Record? result =
+            (await Navigator.pushNamed(context, Routes.employeeForm))
+                as Record?;
 
-          if (result != null) {
-            setState(() {
-              records.add(result);
-            });
+        if (result != null) {
+          setState(() {
+            records.add(result);
+          });
 
-            if (await widget.databaseHelper.insertRecord(result) > 0) {
-              _showMessage('La información ha sido guardada correctamente.');
-            } else {
-              _showMessage('La información ha sido guardada correctamente.');
-            }
+          if (await widget.databaseHelper.insertRecord(result) > 0) {
+            _showMessage('La información ha sido guardada correctamente.');
+          } else {
+            _showMessage('La información ha sido guardada correctamente.');
           }
-        });
+        }
+      }
+    );
   }
 
   Widget _emptyTextWidget(String message) {
@@ -88,14 +118,14 @@ class _RecordsPageState extends State<RecordsPage> {
         child: Text(
           message,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
         ),
       ),
     );
   }
 
   Widget _emptyImageWidget() {
-    return Center(
+    return SafeArea(child: Center(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -104,38 +134,38 @@ class _RecordsPageState extends State<RecordsPage> {
             Image.asset(
               'assets/images/nodata.png',
               height: MediaQuery.of(context).size.height *
-                  0.5, // Ajusta el tamaño de la imagen según tus necesidades
+                  0.3, // Ajusta el tamaño de la imagen según tus necesidades
             ),
             _emptyTextWidget('No hemos encontrado registros'),
           ],
         ),
       ),
-    );
+    )); 
   }
 
   ListView _buildListView(BuildContext context) {
     return ListView.builder(
         padding: const EdgeInsets.only(top: 15.0),
-        itemCount: records.length,
+        itemCount: filteredRecords.length,
         itemBuilder: (context, index) {
           return Dismissible(
-              key: Key(records[index].idRecord as String),
+              key: Key(filteredRecords[index].idRecord as String),
               direction: DismissDirection.endToStart,
               onDismissed: (DismissDirection direction) {
                 //Move to trash
                 widget.databaseHelper
-                    .deleteRecord(records[index].idRecord as String);
+                    .deleteRecord(filteredRecords[index].idRecord as String);
                 setState(() {
-                  records.removeAt(index);
+                  filteredRecords.removeAt(index);
                 });
                 Dialogs(context).showSnackBar('Registro eliminado');
               },
               background: Container(
                 color: Colors.blue,
-                child: const Padding(
-                  padding: EdgeInsets.all(15),
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
                   child: Row(
-                    children: [
+                    children: const [
                       Icon(Icons.favorite, color: Colors.white),
                       Text('Move to favorites',
                           style: TextStyle(color: Colors.white)),
@@ -145,11 +175,11 @@ class _RecordsPageState extends State<RecordsPage> {
               ),
               secondaryBackground: Container(
                 color: Colors.red,
-                child: const Padding(
-                  padding: EdgeInsets.all(15),
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
+                    children: const [
                       Icon(Icons.delete, color: Colors.white),
                       Text('Move to trash',
                           style: TextStyle(color: Colors.white)),

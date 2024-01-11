@@ -19,6 +19,7 @@ dependencies:
   path: ^1.8.1
   image_picker: ^1.0.4
   wp_search_bar: ^0.1.4
+  http: ^0.13.6
 
 dev_dependencies:
   flutter_test:

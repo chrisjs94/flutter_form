@@ -8,7 +8,13 @@ class EmployeeForm extends StatefulWidget {
   final Record record;
   final dynamic onChanged;
 
-  const EmployeeForm(
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool isValid(){
+    return _formKey.currentState?.validate() ?? false;
+  }
+
+  EmployeeForm(
       {required this.record, required this.onChanged, super.key});
 
   @override
@@ -19,8 +25,11 @@ class _EmployeeFormState extends State<EmployeeForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
-      //key: super.key,
+      key: widget._formKey,
       onChanged: () {
+        setState(() {
+          widget.record;
+        });
         widget.onChanged(widget.record);
       },
       child: Column(
@@ -56,6 +65,12 @@ class _EmployeeFormState extends State<EmployeeForm> {
           ),
           TextFormField(
             decoration: const InputDecoration(labelText: 'Label'),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your label';
+              }
+              return null;
+            },
             initialValue: widget.record.label ?? '',
             textInputAction: TextInputAction.next,
             onChanged: (value) => {widget.record.label = value},
@@ -69,6 +84,12 @@ class _EmployeeFormState extends State<EmployeeForm> {
               suffixIcon: Icon(Icons.abc_sharp),
               //suffixText: '*',
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your description';
+              }
+              return null;
+            },
             initialValue: widget.record.description ?? '',
             textInputAction: TextInputAction.next,
             onChanged: (value) => {widget.record.description = value},
@@ -80,8 +101,13 @@ class _EmployeeFormState extends State<EmployeeForm> {
                   child: Padding(
                       padding: const EdgeInsets.all(10),
                       child: TextFormField(
-                        decoration:
-                            const InputDecoration(labelText: 'First name'),
+                        decoration: const InputDecoration(labelText: 'First name'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your first name';
+                          }
+                          return null;
+                        },
                         initialValue: widget.record.firstName ?? '',
                         textCapitalization: TextCapitalization.words,
                         textInputAction: TextInputAction.next,
@@ -91,12 +117,17 @@ class _EmployeeFormState extends State<EmployeeForm> {
                   child: Padding(
                       padding: const EdgeInsets.all(10),
                       child: TextFormField(
-                        decoration:
-                            const InputDecoration(labelText: 'Middle Name'),
-                        initialValue: widget.record.middleName ?? '',
-                        textCapitalization: TextCapitalization.words,
-                        textInputAction: TextInputAction.next,
-                        onChanged: (value) =>
+                        decoration: const InputDecoration(labelText: 'Middle Name'),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter your middle name';
+                            }
+                            return null;
+                          },
+                          initialValue: widget.record.middleName ?? '',
+                          textCapitalization: TextCapitalization.words,
+                          textInputAction: TextInputAction.next,
+                          onChanged: (value) =>
                             {widget.record.middleName = value},
                       )))
             ],
@@ -104,6 +135,12 @@ class _EmployeeFormState extends State<EmployeeForm> {
           const SizedBox(height: 16),
           TextFormField(
             decoration: const InputDecoration(labelText: 'Last name'),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your last name';
+              }
+              return null;
+            },
             initialValue: widget.record.lastName ?? '',
             textCapitalization: TextCapitalization.words,
             textInputAction: TextInputAction.next,
@@ -113,6 +150,12 @@ class _EmployeeFormState extends State<EmployeeForm> {
           TextFormField(
             readOnly: true,
             decoration: const InputDecoration(labelText: 'Birthday'),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please pick your first birthday';
+              }
+              return null;
+            },
             //initialValue: DateFormat('yyyy-MM-dd').format(record.birthday ?? DateTime.now()),
             controller: TextEditingController(
                 text: DateFormat('yyyy-MM-dd')
@@ -134,22 +177,42 @@ class _EmployeeFormState extends State<EmployeeForm> {
           TextFormField(
               keyboardType: TextInputType.number,
               readOnly: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please pick your birthdate for calculate age';
+                }
+                return null;
+              },
               controller: TextEditingController(
                   text: calculateAge(widget.record.birthday ?? DateTime.now())),
               //initialValue: (record.age ?? 0).toString(),
               decoration: const InputDecoration(labelText: 'Age')),
+
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
               value: widget.record.occupation,
               decoration: const InputDecoration(labelText: 'Occupation'),
               onChanged: (value) => {widget.record.occupation = value},
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please select one option for occupation';
+                }
+                return null;
+              },
               items: ['Engineering', 'Licensing', 'Other'].map((e) {
                 return DropdownMenuItem<String>(value: e, child: Text(e));
               }).toList()),
+
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
               value: widget.record.profession,
               decoration: const InputDecoration(labelText: 'Profession'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please select one option for profession';
+                }
+                return null;
+              },
               onChanged: (value) => {widget.record.profession = value},
               items: ['Engineering', 'Licensing', 'Other'].map((e) {
                 return DropdownMenuItem<String>(value: e, child: Text(e));
@@ -160,25 +223,37 @@ class _EmployeeFormState extends State<EmployeeForm> {
             Radio(
               value: 'Male',
               groupValue: widget.record.gender,
-              onChanged: (value) => {widget.record.gender = value as String},
+              onChanged: (value) => {
+                setState(() => widget.record.gender = value as String) 
+              },
             ),
             const Text('Male'),
             Radio(
               value: 'Female',
               groupValue: widget.record.gender,
-              onChanged: (value) => {widget.record.gender = value as String},
+              onChanged: (value) => {
+                setState(() => widget.record.gender = value as String) 
+              },
             ),
             const Text('Female'),
           ]),
           const SizedBox(height: 16),
+
           TextFormField(
               readOnly: true,
               decoration: const InputDecoration(labelText: 'Latitude'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Geolocation is not present. Close form and reopen this.';
+                }
+                return null;
+              },
               //initialValue: record.latitude.toString(),
               controller: TextEditingController(
                   text: widget.record.latitude.toString()),
               textInputAction: TextInputAction.next),
           const SizedBox(height: 16),
+
           TextFormField(
             readOnly: true,
             decoration: const InputDecoration(labelText: 'Longitude'),
@@ -189,7 +264,11 @@ class _EmployeeFormState extends State<EmployeeForm> {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-              onPressed: () => {Navigator.pop(context, widget.record)},
+              onPressed: () => {
+                if (widget._formKey.currentState?.validate() ?? false) {
+                  Navigator.pop(context, widget.record)
+                }
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

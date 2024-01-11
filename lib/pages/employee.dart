@@ -18,13 +18,19 @@ class EmployeePage extends StatefulWidget {
 }
 
 class _EmployeePageState extends State<EmployeePage> {
-  late Record record; LocationData? _currentLocation; bool _firstBuild = true;
+  late Record record; LocationData? _currentLocation; bool _firstBuild = true; late EmployeeForm employeeForm;
   List<XFile> images = [];
   //final GlobalKey<GoogleMapStateBase> _mapKey = GlobalKey<GoogleMapStateBase>();
   //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   _EmployeePageState.newRecord(){
     record = Record.empty();
+
+    employeeForm = EmployeeForm(
+      record: record,
+      onChanged: onChanged,
+      //key: _formKey,
+    );
   }
 
   @override
@@ -76,6 +82,12 @@ class _EmployeePageState extends State<EmployeePage> {
             "latitude": record.latitude,
             "longitude": record.longitude,
           });
+
+          employeeForm = EmployeeForm(
+            record: record,
+            onChanged: onChanged,
+            //key: _formKey,
+          );
         });
       }
       else {
@@ -86,7 +98,11 @@ class _EmployeePageState extends State<EmployeePage> {
     _firstBuild = false;
     return SliverAppBarMapForm(
       appBarTitle: !record.isEditing() ? 'Add new record' : 'Edit record',
-      onSaveButtonClick: () => Navigator.pop(context, record),
+      onSaveButtonClick: () => {
+        if (employeeForm.isValid()) {
+          Navigator.pop(context, record)
+        }
+      },
       onMapButtonClick: viewMapPage,
       onPickImageFromCameraButtonClick: () async => {
         await pickImage(ImageSource.camera)
@@ -102,11 +118,7 @@ class _EmployeePageState extends State<EmployeePage> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: _currentLocation == null ? circularProgress() : 
-            EmployeeForm(
-              record: record,
-              onChanged: onChanged,
-              //key: _formKey,
-            )
+            employeeForm
         )
     );
   }

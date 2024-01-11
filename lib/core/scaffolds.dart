@@ -1,24 +1,61 @@
 
 import 'package:flutter/material.dart';
+import 'package:wp_search_bar/wp_search_bar.dart';
 
 class Scaffolds{
   final BuildContext _context;
   
   Scaffolds(this._context);
 
-  Scaffold homeScaffold({
+  Widget homeScaffold({
     required String appBarTitle, 
     required Widget pageBody,
+    required onSearchAction,
     required onFABPressed}){
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            const SizedBox(width: 8.0),
-            Text(appBarTitle)
-          ],
-        )
-      ),
+    return WPSearchBar(
+      appBarBackgroundColor: const Color(0xff1f2c34),
+      listOfFilters: const {
+          'name': {
+            'name': 'name',
+            'selected': false,
+            'title': 'Nombres y Apellidos',
+            'operation': 'CONTAINS',
+            'icon': Icons.supervised_user_circle_rounded,
+          },
+          'description': {
+            'name': 'description',
+            'selected': false,
+            'title': 'Descripción',
+            'operation': 'CONTAINS',
+            'icon': Icon(Icons.message),
+          }
+        },
+      materialDesign: {
+        'title': { 'text': appBarTitle },
+        'loadingIndicator': Transform.scale(
+          scale: 0.5,
+          child: const CircularProgressIndicator(
+            strokeWidth: 3,
+          ),
+        ),
+        'textField': const {
+          'cursorColor': Colors.white,
+          'style': TextStyle(color: Colors.white),
+          'decoration': InputDecoration(
+              hintText: "Buscar...",
+              hintStyle: TextStyle(color: Colors.white),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.transparent),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.transparent),
+              )),
+        },
+      },
+      onSearch: (filter, value, operation) {
+        debugPrint(filter);
+        onSearchAction(filter, value, operation);
+      },
       body: pageBody,
       floatingActionButton: FloatingActionButton(
         onPressed: onFABPressed,
